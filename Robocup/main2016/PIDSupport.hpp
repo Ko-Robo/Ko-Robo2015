@@ -1,6 +1,6 @@
 /**
  * @file   : PIDSupport.h (0.1)
- * @brief  : support PID.h(Library) 
+ * @brief  : support PID.h(Library)
  * @author : Shinnosuke KOIKE
  * @date   : 2015/08/07
  */
@@ -12,8 +12,8 @@
 #include "PID.h"
 
 class PIDSup {
-    
+
 };
 
-#endif
+#endif /* PIDSUPPORT_H */
 // みかん
