@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="ExternalProjectImportWizard">
+		<item value="true" key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED"/>
+		<item value="true" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
+		<item value="true" key="WizardProjectsImportPage.STORE_NESTED_PROJECTS"/>
+		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
+			<item value="/Users/koishin/Ko-Robo/Robocup"/>
+			<item value="/Users/koishin/Ko-Robo/Robocup/man/man_compass"/>
+			<item value=""/>
+		</list>
+		<list key="WizardProjectsImportPage.STORE_ARCHIVES">
+			<item value=""/>
+			<item value="/Users/koishin/Ko-Robo/Robocup/man/man_compass"/>
+			<item value="/Users/koishin/Downloads/main2016_lpcxpresso_lpc1768.zip"/>
+		</list>
+	</section>
+	<section name="com.crt.quickstart.views.wizards.examples.QSExampleSelectionPage">
+		<item value="/Users/koishin/Ko-Robo/Robocup" key="dirname"/>
+	</section>
+</section>
