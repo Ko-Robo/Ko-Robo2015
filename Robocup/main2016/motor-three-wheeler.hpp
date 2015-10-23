@@ -1,3 +1,10 @@
+/**
+ * @file   : motor-three-wheeler.h (1.0)
+ * @brief  : motors for robot
+ * @author : Shinnosuke KOIKE
+ * @date   : 2015/10/23
+ */
+
 #ifndef MOTOR_FOR_ROBOT_H
 #define MOTOR_FOR_ROBOT_H
 
