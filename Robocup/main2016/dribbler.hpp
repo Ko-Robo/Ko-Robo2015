@@ -35,17 +35,3 @@ void Dribbler::dribble(float power) {
 }
 
 #endif /* DRIBBLER_H */
-
-/**
- * example program
-
-#include "mbed.h"
-#include "dribbler.h"
-
-int main(void) {
-    Dribbler dribbler(D4, D7, D9, D0);
-    while (1) {
-        dribbler.dribble(0.2);
-    }
-}
- */

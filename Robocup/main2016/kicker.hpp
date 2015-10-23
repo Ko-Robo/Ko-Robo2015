@@ -55,18 +55,3 @@ void Kicker::count(void) {
 }
 
 #endif /* KICKER_H */
-
-/**
- * example program
-
-#include "mbed.h"
-#include "kicker.h"
-
-int main(void) {
-    const int interval = 2;
-    Kicker kicker(D0, D1, interval);
-    while (1) {
-        kicker.kick();
-    }
-}
- */

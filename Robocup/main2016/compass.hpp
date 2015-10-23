@@ -35,17 +35,3 @@ float Compass::measure_angle(void) {
 }
 
 #endif /* COMPASS_H */
-
-/**
- * example program
-
-#include "mbed.h"
-#include "compass.h"
-
-int main(void) {
-    Compass compass(D14, D15);
-    while (1) {
-        pc.printf("%f\r\n", compass.measure_angle()); // for example, display "130.143..."
-    }
-}
- */

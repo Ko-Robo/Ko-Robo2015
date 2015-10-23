@@ -32,18 +32,3 @@ char Infrared::find_ball_pos(void) {
 }
 
 #endif /* INFRARED_H */
-
-/**
- * example program(normal)
-
-#include "mbed.h"
-#include "infrared.h"
-
-int main(void) {
-    Infrared infrared(D0, D1, D2, D3, D4, D5, D6, D7);
-    while (1) {
-        char data = infrared.find_ball_pos();
-        pc.printf("%d\r\n", data);  // for example, display "11000001"
-    }
-}
- */

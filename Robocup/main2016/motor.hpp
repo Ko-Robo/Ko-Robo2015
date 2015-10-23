@@ -72,19 +72,3 @@ void Motor::brake(void) {
 }
 
 #endif /* MOTOR_H */
-
-/*
- * example program
-
-#include "mbed.h"
-#include "motor.h"
-
-int main(void) {
-    Motor motor(D4, D7, D9);
-    motor.set_limit(0.8);
-    while (1) {
-        motor.run(-0.2);    // Then D4->Low   D7->High  D9(duty) = 0.2 * 0.8 = 0.16
-        motor.run(2);       // Then D4->High  D7->Low   D9(duty) = 1.0 * 0.8 = 0.8
-    }
-}
- */

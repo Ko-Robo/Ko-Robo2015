@@ -32,21 +32,3 @@ bool Limit::check_normal(void) {
 }
 
 #endif /* LIMIT_H */
-
-/**
- * example program
-
-#include "mbed.h"
-#include "limit.h"
-
-int main(void) {
-    bool normal
-    Limit limit(PA_0, PA_1);
-    while (1) {
-        normal = limit.check_normal();
-        if (normal == false) {
-            // code
-        }
-    }
-}
-*/

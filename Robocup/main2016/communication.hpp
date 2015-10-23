@@ -59,48 +59,4 @@ void CommuSlave::send_data(char addr, char data[]) {
     i2cslave->write(data, 8);
 }
 
-#endif
-
-/**
- * example program(master)
-
-#include "mbed.h"
-#include "communication.h"
-
-#define DATA_NUM    8
-
-I2C i2cmaster(D5, D6);
-
-int main(void) {
-    int  freq = 2000;
-    CommuMaster master(i2cmaster, freq);
-    char addr = 0xA0;
-    char data[DATA_NUM];
-
-    while (1) {
-        master.receive_data(addr, data);
-        for (int i = 0; i < DATA_NUM; i++) {
-            pc.printf("%d ", data[i]);      // display "1 1 0 0 0 0 0 1 "
-        }
-        pc.putchar('\n');
-    }
-}
-
- * example program(slave)
-
-#include "mbed.h"
-#include "communication.h"
-
-I2CSlave i2cslave(D5, D6);
-
-int main(void) {
-    int  freq = 2000;
-    CommuSlave slave(i2cslave, freq);
-    char addr = 0xA0;
-    char data[8] = {1, 1, 0, 0, 0, 0, 0, 1};
-
-    while (1) {
-        slave.send_data(addr, data);
-    }
-}
-*/
+#endif /* COMMUNICATION_H */

@@ -28,19 +28,4 @@ char Line::find_on_line(void) {
     return data;
 }
 
-#endif
-
-/**
- * example program
-
-#include "mbed.h"
-#include "line.h"
-
-int main(void) {
-    Line line(D0, D1, D2);
-    while (1) {
-        char data = line.find_on_line();
-        pc.printf("%d\r\n", data);  // for example, display "1 0 0"
-    }
-}
- */
+#endif /* LINE_H */

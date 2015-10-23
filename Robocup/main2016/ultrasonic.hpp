@@ -2,7 +2,7 @@
  * @file   : ultrasonic.h (1.0)
  * @brief  : measure distance from something
  * @author : Shinnosuke KOIKE
- * @date   : 2015/08/18
+ * @date   : 2015/10/23
  */
 
 #ifndef ULTRASONIC_H
@@ -31,19 +31,3 @@ int Ultrasonic::measure_dist(void) {
 }
 
 #endif /* ULTRASONIC_H */
-
-/**
- * example program
-
-#include "mbed.h"
-#include "ultrasonic.h"
-
-HCSR04 hcsr04(D12, D13);
-
-int main(void) {
-    Ultrasonic ultrasonic(hcsr04);
-    while (1) {
-        pc.printf("%d\r\n", ultrasonic.measure_dist());
-    }
-}
- */
