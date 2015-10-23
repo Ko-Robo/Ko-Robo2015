@@ -193,3 +193,8 @@
 		- private
 			- [initializer] \*i2cslave I2CSlave(sda, scl)
 				- データ、クロックピンの割り当て
+
+## Todo
+- 複数のデバイスでI2C通信を行う
+- 電流・電圧監視の具体的な実装
+- 必要最小限を実装し、擬似的に動かす
