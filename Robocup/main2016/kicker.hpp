@@ -2,7 +2,7 @@
  * @file   : kicker.h (1.0)
  * @brief  : kick the ball
  * @author : Shinnosuke KOIKE
- * @date   : 2015/10/23
+ * @date   : 2015/10/24
  */
 
 #ifndef KICKER_H
@@ -12,8 +12,7 @@
 
 class Kicker {
 public:
-    Kicker(PinName kicker_, PinName touch_ball_, int interval_);
-    ~Kicker();
+    Kicker(PinName kicker_, PinName touch_ball_, int interval_ = 2);
     void kick(void);
 
 private:
@@ -21,8 +20,7 @@ private:
     DigitalIn touch_ball;
     Timer timer;
     const int interval;
-    bool can_kick;
-    void count(void);
+    bool validate_kick(void);
 };
 
 Kicker::Kicker(PinName kicker_, PinName touch_ball_, int interval_):
@@ -30,28 +28,17 @@ Kicker::Kicker(PinName kicker_, PinName touch_ball_, int interval_):
     timer.start();
 }
 
-Kicker::~Kicker() {
-    timer.reset();
-    timer.stop();
-}
-
-
 void Kicker::kick(void) {
-    this->count();
-    if (touch_ball && can_kick) {
+    if (touch_ball && validate_kick()) {
         kicker = 1;
         wait(0.05);
-        this->can_kick = 0;
         kicker = 0;
         timer.reset();
     }
 }
 
-void Kicker::count(void) {
-    float val = timer.read();
-    if (val >= this->interval) {
-        this->can_kick = 1;
-    }
+inline bool Kicker::validate_kick() {
+    return (timer.read() >= interval);
 }
 
 #endif /* KICKER_H */
