@@ -2,7 +2,7 @@
  * @file   : compass.h (1.0)
  * @brief  : measure angle
  * @author : Shinnosuke KOIKE
- * @date   : 2015/10/23
+ * @date   : 2015/10/24
  */
 
 #ifndef COMPASS_H
@@ -26,7 +26,7 @@ Compass::Compass(HMC6352 hmc6352_) {
     hmc6352 = new HMC6352(hmc6352_);
     hmc6352->setOpMode(HMC6352_CONTINUOUS, 1, 20);
     wait(0.05);
-    this->initial_angle = hmc6352->sample() / 10.0;
+    initial_angle = hmc6352->sample() / 10.0;
 }
 
 float Compass::measure_angle(void) {
