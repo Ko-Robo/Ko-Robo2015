@@ -2,7 +2,7 @@
  * @file   : motor.h (1.0)
  * @brief  : control moter
  * @author : Yohei SAITO(, Shinnosuke KOIKE)
- * @date   : 2015/08/18
+ * @date   : 2015/10/23
  */
 
 #ifndef MOTOR_H
@@ -12,128 +12,63 @@
 
 class Motor {
 public:
-    Motor(PinName normalDirect, PinName reverseDirect, PinName pwm);
-    ~Motor();
-    bool setLimit(float powerLimit = 1);
-    void setFlequency(float correctFlequency);
+    Motor(PinName normal_direct, PinName reverse_direct, PinName pwm);
+    bool set_limit(float power_limit = 1);
+    void set_frequency(float correct_frequency);
     void run(float power);
     void brake(void);
 
 private:
-    // power level of motor
-    PwmOut* powerLevel;
-    // forward direction of motor
+    PwmOut* power_level;
     DigitalOut normal;
-    // reverse direction of motor
     DigitalOut reverse;
-    //! motor's power limit
     float limit;
-    void rotateNormal(void);
-    void rotateReverse(void);
+    void rotate_normal(void);
+    void rotate_reverse(void);
 };
 
-/**
- * @fn
- * @breaf : initialize normal, reverse and powerLevel instance
- * @param : (normalDirect) normal rotation
- * @param : (reverseDirect) reverse rotation
- * @param : (pwm) pwm for motor
- */
-Motor::Motor(PinName normalDirect, PinName reverseDirect, PinName pwm):
-    normal(normalDirect), reverse(reverseDirect) {
-    powerLevel = new PwmOut(pwm);
-    this->limit = 1;
+Motor::Motor(PinName normal_direct, PinName reverse_direct, PinName pwm):
+    normal(normal_direct), reverse(reverse_direct) {
+    power_level = new PwmOut(pwm);
 }
 
-/**
- * @fn
- * @breaf : release memory of powerLevel
- */
-Motor::~Motor() {
-    delete powerLevel;
+void Motor::set_frequency(float correct_frequency) {
+    power_level->period(1 / correct_frequency);
 }
 
-/**
- * @fn
- * @breaf : set frequency
- * @param : (correctFrequency) frequency for communicating
- */
-void Motor::setFlequency(float correctFlequency) {
-    powerLevel->period(1 / correctFlequency);
-}
+bool Motor::set_limit(float power_limit) {
+    if (power_limit > 1 || power_limit < -1) return false;
 
-/**
- * @fn
- * @breaf : set power limit
- * @param : (powerLimit) speed of rotation
- * @return : if it is successful, return 0, if not return 1
- */
-bool Motor::setLimit(float powerLimit) {
-    if (powerLimit > 1 || powerLimit < -1) return false;
-
-    limit = powerLimit;
+    limit = power_limit;
     return true;
 }
 
-/**
- * @fn
- * @breaf : run motor
- * @param : (power) speed of lotation
- */
 void Motor::run(float power) {
     if (power > 1)  power = 1;
     if (power < -1) power = -1;
     if (power < 0) {
-        powerLevel->write(-power * limit);
-        rotateReverse();
+        power_level->write(-power * limit);
+        rotate_reverse();
     } else {
-        powerLevel->write(power * limit);
-        rotateNormal();
+        power_level->write(power * limit);
+        rotate_normal();
     }
 }
 
-/**
- * @fn
- * @breaf : rotate in the clockwise
- */
-void Motor::rotateNormal(void) {
+void Motor::rotate_normal(void) {
     normal  = 1;
     reverse = 0;
 }
 
-/**
- * @fn
- * @breaf : rotate in the anticlockwise
- */
-void Motor::rotateReverse(void) {
+void Motor::rotate_reverse(void) {
     normal  = 0;
     reverse = 1;
 }
 
-/**
- * @fn
- * @breaf : brake
- */
 void Motor::brake(void) {
     normal  = 1;
     reverse = 1;
-    powerLevel->write(limit);
+    power_level->write(limit);
 }
 
-#endif
-
-/*
- * example program
-
-#include "mbed.h"
-#include "motor.h"
-
-int main(void) {
-    Motor motor(D4, D7, D9);
-    motor.setLimit(0.8);
-    while (1) {
-        motor.run(-0.2);    // Then D4->Low   D7->High  D9(duty) = 0.2 * 0.8 = 0.16
-        motor.run(2);       // Then D4->High  D7->Low   D9(duty) = 1.0 * 0.8 = 0.8
-    }
-}
- */
+#endif /* MOTOR_H */

@@ -2,7 +2,7 @@
  * @file   : kicker.h (1.0)
  * @brief  : kick the ball
  * @author : Shinnosuke KOIKE
- * @date   : 2015/08/19
+ * @date   : 2015/10/24
  */
 
 #ifndef KICKER_H
@@ -12,79 +12,33 @@
 
 class Kicker {
 public:
-    Kicker(PinName kicker_, PinName touchBall_, int interval_);
-    ~Kicker();
+    Kicker(PinName kicker_, PinName touch_ball_, int interval_ = 2);
     void kick(void);
 
 private:
     DigitalOut kicker;
-    // ball contact sensor
-    DigitalIn touchBall;
+    DigitalIn touch_ball;
     Timer timer;
     const int interval;
-    //! kick flag
-    bool enableKick;
-    void count(void);
+    bool validate_kick(void);
 };
 
-/**
- * @fn
- * @breaf : initialize kicker and start timer
- * @param : (kicker_) kicker
- * @param : (touchBall_) find ball which exists before their's eyes
- * @param : (interval_) kick interval
- */
-Kicker::Kicker(PinName kicker_, PinName touchBall_, int interval_):
-    kicker(kicker_), touchBall(touchBall_), interval(interval_) {
+Kicker::Kicker(PinName kicker_, PinName touch_ball_, int interval_):
+    kicker(kicker_), touch_ball(touch_ball_), interval(interval_) {
     timer.start();
 }
 
-/**
- * @fn
- * @breaf : reset timer and stop
- */
-Kicker::~Kicker() {
-    timer.reset();
-    timer.stop();
-}
-
-/**
- * @fn
- * @breaf : if ball exist before their's eyes and was set a kick flag, kick the ball
- */
 void Kicker::kick(void) {
-    this->count();
-    if ((touchBall | 1) && enableKick) {
+    if (touch_ball && validate_kick()) {
         kicker = 1;
         wait(0.05);
-        this->enableKick = 0;
         kicker = 0;
         timer.reset();
     }
 }
 
-/**
- * @fn
- * @breaf : count interval seconds and set kick flag
- */
-void Kicker::count(void) {
-    float val = timer.read();
-    if (val >= this->interval) {
-        this->enableKick = 1;
-    }
+inline bool Kicker::validate_kick() {
+    return (timer.read() >= interval);
 }
 
-#endif
-
-/**
- * example program
-#include "mbed.h"
-#include "kicker.h"
-int main(void) {
-    const int interval = 2;
-    Kicker kicker(D0, D1, interval);
-    while (1) {
-        kicker.kick();
-    }
-}
- */
+#endif /* KICKER_H */
