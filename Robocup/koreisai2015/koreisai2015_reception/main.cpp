@@ -6,10 +6,10 @@
 
 Serial pc(USBTX, USBRX);
 Serial xbee(PA_11, PA_12);
-Motor motorA(PA_13, PA_14, PA_15);
-Motor motorB(PC_2, PC_3, PB_7);
-Motor motorC(PB_15, PB_14, PB_13);
-Motor motorD(PC_5, PC_8, PC_6);
+Motor  motorA(PA_13, PA_14, PA_15);
+Motor  motorB(PC_2, PC_3, PB_7);
+Motor  motorC(PB_15, PB_14, PB_13);
+Motor  motorD(PC_5, PC_8, PC_6);
 
 char operationData[6];
 
@@ -43,14 +43,14 @@ int main(void) {
         } else {
             unsigned short upToDown    = (operationData[2] << 8) | operationData[3];
             unsigned short leftToRight = (operationData[4] << 8) | operationData[5];
-            double upToDownCoefficient    = upToDown / harfOfMax - 1;
+            double upToDownCoefficient = upToDown / harfOfMax - 1;
             double leftToRightCoefficient = leftToRight / harfOfMax - 1;
 
-            double powerA = upToDownCoefficient * 0.7 + leftToRightCoefficient *  0.7;
-            double powerB = upToDownCoefficient * 0.7 + leftToRightCoefficient * -0.7;
+            double powerA = upToDownCoefficient *  0.7 + leftToRightCoefficient *  0.7;
+            double powerB = upToDownCoefficient *  0.7 + leftToRightCoefficient * -0.7;
             double powerC = upToDownCoefficient * -0.7 + leftToRightCoefficient * -0.7;
             double powerD = upToDownCoefficient * -0.7 + leftToRightCoefficient *  0.7;
-            
+
             motorA.run(powerA);
             motorB.run(powerB);
             motorC.run(powerC);

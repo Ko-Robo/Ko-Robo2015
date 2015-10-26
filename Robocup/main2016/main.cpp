@@ -6,7 +6,7 @@
  */
 
 #include "mbed.h"
-// #include "definition.hpp"
+#include "definition.hpp"
 
 int main(void) {
     while (1) {

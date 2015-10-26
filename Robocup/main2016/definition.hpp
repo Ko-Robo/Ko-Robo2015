@@ -10,16 +10,16 @@
 
 // header files
 #include "mbed.h"
-// #include "control.hpp"
-// #include "motor.hpp"
-// #include "motor-three-wheeler.hpp"
-// #include "infrared.hpp"
-// #include "compass.hpp"
-// #include "ultrasonic.hpp"
-// #include "line.hpp"
-// #include "kicker.hpp"
-// #include "dribbler.hpp"
-// #include "communication.hpp"
+#include "control.hpp"
+#include "motor.hpp"
+#include "motor-three-wheeler.hpp"
+#include "infrared.hpp"
+#include "compass.hpp"
+#include "ultrasonic.hpp"
+#include "line.hpp"
+#include "kicker.hpp"
+#include "dribbler.hpp"
+#include "communication.hpp"
 
 // pin design(instance)
     // Motor
