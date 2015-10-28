@@ -13,7 +13,7 @@
 
 class Compass {
 public:
-    Compass(HMC6352 hmc6352_);
+    Compass(PinName sda, PinName scl);
     float measure_angle(void);
 
 private:
@@ -22,8 +22,8 @@ private:
     float initial_angle;
 };
 
-Compass::Compass(HMC6352 hmc6352_) {
-    hmc6352 = new HMC6352(hmc6352_);
+Compass::Compass(PinName sda, PinName scl) {
+    hmc6352 = new HMC6352(sda, scl);
     hmc6352->setOpMode(HMC6352_CONTINUOUS, 1, 20);
     wait(0.05);
     initial_angle = hmc6352->sample() / 10.0;
