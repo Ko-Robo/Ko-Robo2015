@@ -10,9 +10,9 @@
 
 #include "mbed.h"
 
-class Seven_segment_LED {
+class SevenSegmentLED {
 public:
-    Seven_segment_LED(/* ピン名(BusOutで一度に指定??) */);
+    SevenSegmentLED(/* ピン名(BusOutで一度に指定??) */);
     light();
 
 private:
