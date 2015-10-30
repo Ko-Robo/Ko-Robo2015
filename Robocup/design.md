@@ -1,7 +1,7 @@
 # ロボカップ2016設計詳細
 
 ## 使用するマイコンとその内訳
-- LPC1768
+- LPC1768(純正)
 	- IO:22
 	- PWM:6
 	- I2C:2x2
@@ -12,12 +12,12 @@
 
 ## マイコン使用
 下記6つのモジュールに対して、一つずつマイコンを使用する
-- メイン、モータ、コンパス、ライン
+- メイン
 - IR
 - キッカー、ドリブラ
 - 超音波
 - コントローラ
-- 7セグ・電圧電流
+- 電圧電流
 
 ## ピン使用
 - メイン(LPC1768)
@@ -45,9 +45,11 @@
 	- I2C(2x1)
 		- メインマイコンとの通信
 - コントローラ(LPC1114)
+	- モードの切り替え (ピン未定)
+	- その他デバッグ (ピン未定)
 	- I2C(2x1)
 		- メインマイコンとの通信
-- 7セグ・電圧電流(LPC1114)
+- 電圧電流監視(LPC1114)
 	- 7セグ(12x1)
 	- 圧電ブザー PWM(1x1)
 	- ボタン I/O(1x1)
@@ -55,181 +57,81 @@
 		- INA226との通信
 	- メインマイコンへの信号送信 I/O(1x1)
 
-## Policy
-- クラス名はパスカルケース(SomeClass)
-- 変数名、メソッド名はスネークケース(some_variable, some_method)
+## 設計
+### メイン
+- Classes
+	- __Compass__
+		- \# コンパスの管理
+		- ディジタルコンパスモジュールによって取得した角度をmainに渡す
+		- HMC6352クラスのラッパークラス
+	- __Motor__
+		- \# モータ制御
+		- 一つのモータの制御を行う
+	- __MotorThreeWheeler__
+		- \# 三つのモータの制御
+		- Motorクラスを包含している
+		- 主に3輪ロボットのモータ制御を行う
+- main
+	- \# すべてのマイコンとの通信および統括
+	- Compassクラスから受け取った角度を元に、ロボットの方向の調整を行う
+	- Motorクラスを用いて、ロボットを走らせる
+	- IR用のマイコンから受け取った値を元に、ボールを追いかける
+	- ラインセンサから受け取った値を用いてモータを制御し、アウト・オブ・バウンズを防ぐ
+	- 超音波センサから受け取った値を用いてモータを制御し、アウト・オブ・バウンズを防ぐ
+	- LED等を用いて、さまざまなデバッグを行う
+	- コントローラマイコンから受け取った値を元に、モードの切り替えを行う
+	- 電圧電流監視用のマイコンから受け取った値を評価し、緊急停止等を行う
 
-- __ClassName__
-	- \# クラスの説明
-	- [variable] varName : type
-		- 変数の説明
-	- [constructor] ClassName()
-		- コンストラクタの説明
-	- [initializer] initializerName : UseClassName(PinName)
-		- ピン割り当ての説明
-	- [func] FuncName() -> return_type
-		- 関数の説明
-	- [func] FuncName(type *args*)
-		- 引数は斜体にする。返り値がない場合は`->`を省略
+### IR
+- main
+	- \# IRセンサの管理
+	- IRセンサから受け取った値を整理し、メインマイコンに送信する
 
-## Classes
-- __Control__
-	- \# 全体の制御
-- __Motor__
-	- \# モータの制御
-	- public
-		- [constructor] Motor(PinName *normalDirect*, PinName *reverseDirect*, PinName *pwm*)
-			- 正転、逆転方向のピン(DigitalOut)、duty比調整のピン(PWM)の設定
-		- [destructor] ~Motor()
-			- powerLimit(pwm)のメモリ解放
-		- [function] setLimit(float *powerLimit* = 1) -> int
-			- duty比の上限を決める
-			- 引数が適切な値だった場合(0 ~ 1)は0を、そうでなかった場合は1を返す
-		- [function] setFlequency(float *correctFlequency*)
-			- 周波数を設定する
-		- [function] run(float *power*)
-			- モータを回す
-		- [function] brake(void)
-			- ブレーキ
-	- private
-		- [initializer] \*powerLevel : PwmOut(pwm)
-			- duty比設定のためのピンの割り当て
-		- [initializer] normal : DigitalOut(normalDirect)
-			- 正転方向のピンの割り当て
-		- [initializer] reverse : DigitalOut(reverseDirect)
-			- 逆転方向のピンの割り当て
-		- [variable] limit : float
-			- duty比の上限
-		- [function] rotateNormal(void)
-			- 時計回りに回転
-		- [function] rotateReverse(void)
-			- 反時計回りに回転
-- __Infrared__
-	- \# 赤外線ボールの位置を検知
-	- public
-		- [constructor] Infrared(PinName *front*, PinName *frontLeft*, PinName *left*, PinName *backLeft*, PinName *back*, PinName *backRight*, PinName *right*, PinName *frontRight*)
-			- 8方位の、それぞれのピン(DigitalIn)の設定
-		- [function] findBallPos(void) -> char
-			- 8方位の反応の有無を返す
-	- private
-		- [initializer] infraredData : BusIn
-- __AnalogInfrared__
-	- \# 赤外線ボールの位置と距離を検知
-	- public
-		- [constructor] AnalogInfrared(PinName *front*, PinName *frontLeft*, PinName *left*, PinName *backLeft*, PinName *back*, PinName *backRight*, PinName *right*, PinName *frontRight*)
-			- 8方位の、それぞれのピン(AnalogIn)の設定
-		- [function] findBallPosAndDist(char *data[]*)
-	- private
-		- [initializer] AnalogIn analogFront;
-		- [initializer] AnalogIn analogFrontLeft;
-		- [initializer] AnalogIn analogLeft;
-		- [initializer] AnalogIn analogBackLeft;
-		- [initializer] AnalogIn analogBack;
-		- [initializer] AnalogIn analogBackRight;
-		- [initializer] AnalogIn analogRight;
-		- [initializer] AnalogIn analogFrontRight;
-			- 以上8つは、8方位のピンの設定
-- __Compass__
-	- \# 角度入手
-	- public
-		- [constructor] Compass(PinName *sda*, PinName *scl*)
-			- データ(I2C sda)、クロック(I2c scl)のピンと初期角度の設定
-		- [destructor] ~Compass()
-			- hmc6352(sda, scl)のメモリ解放
-		- [function] measureAngle(void) -> float
-			- 初期角度との差分を返す
-	- private
-		- [initializer] \*hmc6352 : HMC6352(sda, scl)
-			- データ、クロックピンの割り当て(I2C通信を用いる)
-		- [variable] initialAngle : float
-			- 初期角度
-- __Ultrasonic__
-	- \# 障害物との距離の入手
-	- public
-		- [constructor] Ultrasonic(PinName *trig*, PinName *echo*)
-			- トリガーとエコーピン(DigitalIn)の設定
-		- [destructor] ~Ultrasonic()
-			- hcsr04(trig, echo)のメモリ解放
-		- [function] measureDist(void) -> int
-			- 障害物との距離を返す
-	- private
-		- [initializer] \*hcsr04 HCSR04(trig, echo)
-			- トリガー、エコーピンの割り当て
-- __Line__
-	- \# 白線の上に乗っているかを調べる
-	- public
-		- [constructor] Line(PinName *right*, PinName *back*, PinName *left*)
-			- 右、後ろ、左のそれぞれのピン(DigitalIn)の設定
-		- [function] findOnLine(void) -> char
-			- 白線に乗っているかを返す
-	- private
-		- [initializer] lineData : BusIn
-			- データを受け取るピンの割り当て
-- __Kicker__
-	- \# 蹴る
-	- public
-		- [constructor] Kicker(PinName *kicker_*, PinName *brightness_*)
-			- キッカー(DigitalOut)、ボール接触センサ(DigitalIn)のピンの設定と、時間測定開始
-		- [destructor] ~Kicker()
-			- Timerをリセットし、ストップ
-		- [function] kick(void)
-			- キックする
-	- private
-		- [initializer] kicker : DigitalOut
-			- キッカー用のピンの割り当て
-		- [initializer] brightness : DigitalIn
-			- ボール接触センサ用のピンの割り当て
-		- [initializer] timer : Timer
-			- 秒数を数える
-		- [constant] interval : int
-			- キックする間隔
-		- [variable] enableKick : bool
-			- キックすべきかどうかのフラグ
-		- [function] count(void)
-			- 秒数を数える
-- __Dribbler__
-	- \# ドリブルする
-	- public
-		- [constructor] Dribbler(PinName *normalDirect*, PinName *reverseDirect*, PinName *pwm*, PinName *dribblerIR_*)
-			- 正転、逆転方向のピン(DigitalOut)、duty比調整のピン(PWM)とドリブラ用IR(DigitalIn)ピンの設定
-			- duty比の上限の設定
-		- [function] dribble(float *power*)
-			- ドリブルする
-	- private
-		- [initializer] dribblerIR : DigitalIn
-			- ドリブラ用IRセンサのピンの割り当て
-		- [initializer] dribblerMotor : Motor
-			- Motorクラスを用いる(包含)
-- __PIDSup__
-	- \# PID制御のライブラリの補助
-- __CommuMaster__
-	- \# 通信(master)の管理
-	- public
-		- [constructor] CommuMaster(PinName *sda*, PinName *scl*)
-			- データ(I2C sda)、クロック(I2c scl)のピンの設定
-		- [destructor] ~CommuMaster()
-			- i2cmaster(sda, scl)のメモリ解放
-		- [function] init(int *correctFlequency*, char *addr*)
-			- 周波数及びアドレスの設定
-		- [function] receiveData(char *data[]*)
-			- 値を受け取り、第一引数の配列に格納
-	- private
-		- [initializer] \#i2cmaster I2CMaster(sda, scl)
-			- データ、クロックピンの割り当て
-		- [variable] addr : char
-			- 受け取ったアドレス
-- __CommuSlave__
-	- \# 通信(slave)の管理
-	- コンストラクタ、デストラクタ、初期化関数はmasterと同じ
-		- public
-			- [function] sendData(char *data[]*)
-				- 第一引数にとった配列を送る
-		- private
-			- [initializer] \*i2cslave I2CSlave(sda, scl)
-				- データ、クロックピンの割り当て
+### キッカー・ドリブラ
+- Classes
+	- __Kicker__
+		- \# キッカーの制御
+		- キックするべきか判断し、それに応じて動作させる
+- main
+	- \# キッカー・ドリブラの制御
+	- ボールがロボットの目の前に来たとき、ドリブルまたはキックをする(場合による)
+	- メインマイコンに、ボールをホールドしているかどうかの信号を送信する
+
+### 超音波
+- Classes
+	- __Ultrasonic__
+		- \# 超音波センサの管理
+		- 超音波センサから受け取った値を評価し、それをmainに渡す
+		- HCSR04クラスのラッパークラス
+- main
+	- \# 超音波センサの管理
+	- Ultrasonicクラスから受け取った値をメインマイコンに送信する
+
+### コントローラ
+- Classes
+	- __Control__
+		- \# コントロールパネル
+		- その他未定
+- main
+	- \# コントロールパネル
+	- スイッチから受け取った値をメインマイコンに送信する。モード切り替えを行う
+
+### 電圧電流監視
+- Classes
+	- __Limit__
+		- \# 電圧と電流の値を監視する
+		- 電圧電流センサから受け取った値を評価し、それをmainに渡す
+		- その他未定
+	- __SevenSegmentLED__
+		- \# 7セグメントLEDの管理・表示の簡略化
+		- mainから受け取った値を7セグメントLEDに表示する
+- main
+	- \# 電圧と電流の値を監視する
+	- Limitクラスから受け取った値をメインマイコンに送信する
 
 ## Todo
 - [x] 複数のデバイスでI2C通信を行う
 - [ ] 電流・電圧監視の具体的な実装
 - [ ] 必要最小限を実装し、擬似的に動かす
 - [ ] I2C通信をしながらpc.printfが出来るかどうか
+- [ ] クラスからインスタンス名の取得
