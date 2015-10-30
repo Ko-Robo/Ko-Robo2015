@@ -19,19 +19,19 @@ public:
                     PinName cathode3_, PinName cathode4_);
     void display_data(int value, int dot_point = 0);
     void enable_dynamic_lighting(int interval);
+    void dynamic_lighting();
 
 private:
     BusOut anode;
     BusOut cathode;
     Ticker timer;
     char data[4];
-    void dynamic_lighting();
 };
 
 SevenSegmentLED::SevenSegmentLED(PinName anode1_, PinName anode2_, PinName anode3_,
         PinName anode4_, PinName anode5_, PinName anode6_, PinName anode7_, PinName anode8_,
         PinName cathode1_, PinName cathode2_, PinName cathode3_, PinName cathode4_) :
-        anode(anode1_, anode2_, anode3_, anode4_, anode5_, anode6_, anode7_, anode8_),
+        anode(anode8_, anode7_, anode6_, anode5_, anode4_, anode3_, anode2_, anode1_),
         cathode(cathode1_, cathode2_, cathode3_, cathode4_) {
     for (int i = 0; i < 4; i++) {
         data[i] = 0;
