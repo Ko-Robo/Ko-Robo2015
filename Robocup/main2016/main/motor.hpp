@@ -18,7 +18,7 @@ public:
     void run(float power);
     void brake(void);
 
-private:
+protected:
     PwmOut* power_level;
     DigitalOut normal;
     DigitalOut reverse;
