@@ -11,8 +11,7 @@ public:
 
 private:
     // ultrasonic sensor
-    HCSR04* hcsr04
-    long distance;
+    HCSR04* hcsr04;
 };
 
 Ultrasonic::Ultrasonic(PinName trig, PinName echo) {
@@ -20,10 +19,7 @@ Ultrasonic::Ultrasonic(PinName trig, PinName echo) {
 }
 
 long Ultrasonic::measure_distance(void) {
-    wait(0.1);
-    distance = hcsr04->distance();
-    if (distance > 100) return -1;
-    return distance;
+    return hcsr04->distance();
 }
 
 #endif /* ULTRASONIC_H */
