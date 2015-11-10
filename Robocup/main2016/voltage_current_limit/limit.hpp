@@ -9,24 +9,45 @@
 #define LIMIT_H
 
 #include "mbed.h"
+#include "INA226.hpp"
 
 class Limit {
 public:
-    Limit(PinName current_, PinName voltage_);
-    bool check_normal(void);
+    Limit(I2C i2c);
+    void set_limit(double max_voltage, double max_current);
+    bool check_normal(double *voltage, double *current);
 
 private:
-    AnalogIn current;
-    AnalogIn voltage;
+    INA226 voltage_current_monitor;
+    double max_voltage;
+    double max_current;
 };
 
-Limit::Limit(PinName current_, PinName voltage_) :
-        current(current_), voltage(voltage_) {
+Limit::Limit(I2C i2c) : voltage_current_monitor(i2c) {
+    unsigned short val;
+    if (!voltage_current_monitor.isExist()) {
+        while (1)
+            ;
+    } else if (voltage_current_monitor.rawRead(0x00, &val) != 0) {
+        // debug.printf("voltage_current_monitor READ ERROR\r\n");
+        while (1)
+            ;
+    }
+
+    voltage_current_monitor.setCurrentCalibration();
 }
 
-bool Limit::check_normal(void) {
-    if (current > 10) return false;
-    if (voltage > 30) return false;
+void Limit::set_limit(double max_voltage, double max_current) {
+    this->max_voltage = max_voltage;
+    this->max_current = max_current;
+}
+
+bool Limit::check_normal(double *voltage, double *current) {
+    voltage_current_monitor.getVoltage(voltage);
+    voltage_current_monitor.getCurrent(current);
+
+    if (*voltage > max_voltage) return false;
+    if (*current > max_current) return false;
 
     return true;
 }
