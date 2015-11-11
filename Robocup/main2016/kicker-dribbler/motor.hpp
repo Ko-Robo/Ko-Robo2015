@@ -30,6 +30,7 @@ protected:
 Motor::Motor(PinName normal_direct, PinName reverse_direct, PinName pwm):
     normal(normal_direct), reverse(reverse_direct) {
     power_level = new PwmOut(pwm);
+    limit = 0.8;
 }
 
 void Motor::set_frequency(float correct_frequency) {
