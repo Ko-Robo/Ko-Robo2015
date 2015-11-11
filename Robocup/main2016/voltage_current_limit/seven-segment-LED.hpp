@@ -12,13 +12,13 @@
 
 class SevenSegmentLED {
 public:
-    SevenSegmentLED(PinName anode1_, PinName anode2_, PinName anode3_,
-                    PinName anode4_, PinName anode5_, PinName anode6_,
-                    PinName anode7_, PinName anode8_,
-                    PinName cathode1_, PinName cathode2_,
-                    PinName cathode3_, PinName cathode4_);
+    SevenSegmentLED(PinName anode1, PinName anode2, PinName anode3,
+                    PinName anode4, PinName anode5, PinName anode6,
+                    PinName anode7, PinName anode8,
+                    PinName cathode1, PinName cathode2,
+                    PinName cathode3, PinName cathode4);
     void display_data(int value, int dot_point = 0);
-    void enable_dynamic_lighting(int interval);
+    void enable_dynamic_lighting(int interval = 1000);
     void dynamic_lighting();
 
 private:
@@ -28,11 +28,11 @@ private:
     char data[4];
 };
 
-SevenSegmentLED::SevenSegmentLED(PinName anode1_, PinName anode2_, PinName anode3_,
-        PinName anode4_, PinName anode5_, PinName anode6_, PinName anode7_, PinName anode8_,
-        PinName cathode1_, PinName cathode2_, PinName cathode3_, PinName cathode4_) :
-        anode(anode8_, anode7_, anode6_, anode5_, anode4_, anode3_, anode2_, anode1_),
-        cathode(cathode1_, cathode2_, cathode3_, cathode4_) {
+SevenSegmentLED::SevenSegmentLED(PinName anode1, PinName anode2, PinName anode3,
+        PinName anode4, PinName anode5, PinName anode6, PinName anode7, PinName anode8,
+        PinName cathode1, PinName cathode2, PinName cathode3, PinName cathode4) :
+        anode(anode8, anode7, anode6, anode5, anode4, anode3, anode2, anode1),
+        cathode(cathode1, cathode2, cathode3, cathode4) {
     for (int i = 0; i < 4; i++) {
         data[i] = 0;
     }
@@ -43,7 +43,7 @@ void SevenSegmentLED::enable_dynamic_lighting(int interval) {
 }
 
 void SevenSegmentLED::display_data(int value, int dot_point) {
-    for (int i = 3; i > 0; value /= 10, i--) {
+    for (int i = 3; i >= 0; value /= 10, i--) {
         switch (value % 10) {
             case 1:
                 data[i] = 0b01100000; // 1
@@ -79,7 +79,7 @@ void SevenSegmentLED::display_data(int value, int dot_point) {
                 data[i] = 0b00000000; // non
                 break;
         }
-        if (3 - dot_point == 1) {
+        if (3 - dot_point == i) {
             data[i] |= 1;
         }
     }
