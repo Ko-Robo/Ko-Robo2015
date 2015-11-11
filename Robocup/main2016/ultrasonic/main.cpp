@@ -1,11 +1,12 @@
 #include "mbed.h"
 #include "ultrasonic.hpp"
 
-Ultrasonic ultrasonic_front(dp1, dp2);
-Ultrasonic ultrasonic_right(dp4, dp6);
-Ultrasonic ultrasonic_back(dp9, dp10);
-Ultrasonic ultrasonic_left(dp11, dp13);
-Ultrasonic ultrasonics[4] = {ultrasonic_front, ultrasonic_right, ultrasonic_back, ultrasonic_left};
+Ultrasonic* ultrasonics[4] = {
+    new Ultrasonic(dp1, dp2),  // front
+    new Ultrasonic(dp4, dp6),  // right
+    new Ultrasonic(dp9, dp10), // back
+    new Ultrasonic(dp11, dp13) // left
+};
 
 I2CSlave i2c(dp5, dp27);
 
@@ -28,7 +29,7 @@ int main(void) {
                 break;
             case I2CSlave::NoData:
             default:
-                distances[sensor_direction % 4] = ultrasonics[sensor_direction % 4].measure_distance();
+                distances[sensor_direction % 4] = ultrasonics[sensor_direction % 4]->measure_distance();
                 sensor_direction++;
                 break;
         }
