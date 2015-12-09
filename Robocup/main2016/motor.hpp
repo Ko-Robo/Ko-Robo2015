@@ -2,7 +2,7 @@
  * @file   : motor.h (1.0)
  * @brief  : control moter
  * @author : Yohei SAITO(, Shinnosuke KOIKE)
- * @date   : 2015/10/23
+ * @date   : 2015/08/04
  */
 
 #ifndef MOTOR_H
@@ -12,66 +12,85 @@
 
 class Motor {
 public:
-    Motor(PinName normal_direct, PinName reverse_direct, PinName pwm);
-    bool set_limit(float power_limit = 1);
-    void set_frequency(float correct_frequency);
-    void run(float power);
+    Motor();
+    Motor(PinName normalDirect, PinName reverseDirect, PinName pwm);
+    ~Motor();
+    int  setLimit(float powerLimit = 1);
+    void setFlequency(float correctFlequency);
+    void run(float power); // input -1 ~ 1
     void brake(void);
+    void operator=(float power);
 
 private:
-    PwmOut* power_level;
+    float limit;
+    PwmOut* powerLevel;
     DigitalOut normal;
     DigitalOut reverse;
-    float limit;
-    void rotate_normal(void);
-    void rotate_reverse(void);
+    void rotateNormal(void);
+    void rotateReverse(void);
 };
 
-Motor::Motor(PinName normal_direct, PinName reverse_direct, PinName pwm):
-    normal(normal_direct), reverse(reverse_direct) {
-    power_level = new PwmOut(pwm);
+// initialize
+Motor::Motor(PinName normalDirect, PinName reverseDirect, PinName pwm):
+    normal(normalDirect), reverse(reverseDirect) {
+    powerLevel = new PwmOut(pwm);
+    limit = 1;
 }
 
-void Motor::set_frequency(float correct_frequency) {
-    power_level->period(1 / correct_frequency);
+Motor::~Motor() {
+    delete powerLevel;
 }
 
-bool Motor::set_limit(float power_limit) {
-    if (power_limit > 1 || power_limit < -1) return false;
-
-    limit = power_limit;
-    return true;
+// set flequency
+void Motor::setFlequency(float correctFlequency) {
+    powerLevel->period(1 / correctFlequency);
 }
 
+// set power limit
+int Motor::setLimit(float powerLimit) {
+    if (powerLimit > 1 || powerLimit < -1) return 1;
+
+    limit = powerLimit;
+    return 0;
+}
+
+// run moter
 void Motor::run(float power) {
     if (power > 1)  power = 1;
     if (power < -1) power = -1;
     if (power < 0) {
-        power_level->write(-power * limit);
-        rotate_reverse();
+        powerLevel->write(-power * limit);
+        rotateReverse();
     } else {
-        power_level->write(power * limit);
-        rotate_normal();
+        powerLevel->write(power * limit);
+        rotateNormal();
     }
 }
 
-void Motor::rotate_normal(void) {
+void Motor::operator=(float power){
+    this->run(power);
+}
+
+// rotate in the clockwise
+void Motor::rotateNormal(void) {
     normal  = 1;
     reverse = 0;
 }
 
-void Motor::rotate_reverse(void) {
+// rotate in the anticlockwise
+void Motor::rotateReverse(void) {
     normal  = 0;
     reverse = 1;
 }
 
+// brake
 void Motor::brake(void) {
     normal  = 1;
     reverse = 1;
-    power_level->write(limit);
+    powerLevel->write(limit);
 }
 
-#endif /* MOTOR_H */
+#endif
 
 /*
  * example program
@@ -81,10 +100,12 @@ void Motor::brake(void) {
 
 int main(void) {
     Motor motor(D4, D7, D9);
-    motor.set_limit(0.8);
+    motor.setLimit(0.8);
     while (1) {
-        motor.run(-0.2);    // Then D4->Low   D7->High  D9(duty) = 0.2 * 0.8 = 0.16
-        motor.run(2);       // Then D4->High  D7->Low   D9(duty) = 1.0 * 0.8 = 0.8
+        motor.run(-0.2);    // D4->Low   D7->High  D9(duty) = 0.2 * 0.8 = 0.16
+        motor.run(2);       // D4->High  D7->Low   D9(duty) = 1.0 * 0.8 = 0.8
+        motor = 0.5;       // same as run(0.5);
     }
 }
  */
+ 
