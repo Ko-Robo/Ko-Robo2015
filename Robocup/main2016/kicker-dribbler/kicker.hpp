@@ -13,32 +13,35 @@
 class Kicker {
 public:
     Kicker(PinName kicker_, PinName touch_ball_, int interval_ = 2);
-    void kick(void);
+    void enable_kick();
+    void disable_kick();
 
 private:
     DigitalOut kicker;
     DigitalIn touch_ball;
-    Timer timer;
+    Ticker timer;
     const int interval;
-    bool validate_kick(void);
+    void kick(void);
 };
 
 Kicker::Kicker(PinName kicker_, PinName touch_ball_, int interval_):
     kicker(kicker_), touch_ball(touch_ball_), interval(interval_) {
-    timer.start();
 }
 
 void Kicker::kick(void) {
-    if (touch_ball && validate_kick()) {
+    if (touch_ball) {
         kicker = 1;
-        wait(0.05);
+        wait(0.001);
         kicker = 0;
-        timer.reset();
     }
 }
 
-inline bool Kicker::validate_kick() {
-    return (timer.read() >= interval);
+void Kicker::enable_kick() {
+    timer.attach(this, &Kicker::kick, interval);
+}
+
+void Kicker::disable_kick() {
+    timer.detach();
 }
 
 #endif /* KICKER_H */
