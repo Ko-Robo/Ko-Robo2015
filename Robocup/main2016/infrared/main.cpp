@@ -5,6 +5,33 @@ BusIn far(dp24, dp25);
 
 I2CSlave communication(dp5, dp27);
 
+char exchange(long near_data, char far_data) {
+    int angle = 0;
+    char cnt = 0;
+    char base;
+    long judge = near_data | (near_data << 12);
+​
+    if (!near_data || (near_data == 0xfff))
+        return far_data | 0xfc;
+​
+    //0が三つ連続である時を探す
+    for (base = 11; ((judge >> base) & 7); base--);
+
+    //三つ連続するところがないとき0を1つで考える
+    if (base <= 0) {
+        for (base = 11; ((near_data >> base) & 1); base--);
+    }
+​
+    for (char i = base; i < (base + 12); i++) {
+        if (((near_data >> (i % 12)) & 1)) {
+            cnt++;
+            angle += i;
+        }
+    }
+​
+    return (int)(angle * 21.0 / cnt) % 252;
+}
+
 int main(void) {
     while (1) {
 
