@@ -1,45 +1,47 @@
 #include "mbed.h"
+#define SHORT_MAX 65536.0
 
 Serial xbee(dp16, dp15);
-AnalogIn left_to_right(dp9);
-AnalogIn up_to_down(dp10);
-BusIn buttons(dp4, dp5, dp6);
-BusOut leds(dp14,dp17,dp28);
-PwmOut pwm(dp18);
+AnalogIn leftToRight(dp9);
+AnalogIn upToDown(dp10);
+BusIn buttons(dp1, dp2, dp25);//L R SW
+BusOut LEDs( dp14, dp17, dp28);//ボタンデータを反映
+PwmOut pwmLed( dp18);//テキトーに光らせる
+
 int main(void) {
     xbee.format(8, Serial::None, 1);
 
     while (1) {
-        xbee.putc(0);
-        wait_ms(15);
-        pwm = 1;
-        unsigned short buttons_data = buttons;
-        xbee.putc(buttons_data);
-        leds = buttons;
+        pwmLed = 0.1;
+        xbee.putc(0x0);
         wait_ms(15);
 
-        pwm = 0.9;
-        unsigned short up_to_down_data = up_to_down.read_u16();
-        unsigned short upper_eight_bits = up_to_down_data >> 8;
-        xbee.putc(upper_eight_bits);
+        pwmLed = 0.4;
+        unsigned short buttonsData = buttons;
+        xbee.putc(~buttonsData);
+        LEDs = ~buttonsData;
         wait_ms(15);
 
-        pwm = 0.8;
-        unsigned short lower_eight_bits = up_to_down_data;
-        xbee.putc(lower_eight_bits);
+        pwmLed = 0.8;
+        unsigned short upToDownData = upToDown.read_u16();
+        unsigned short upperEightBits = upToDownData >> 8;
+        xbee.putc(upperEightBits);
         wait_ms(15);
-
-        pwm = 0.7;
-        unsigned short left_to_right_data = left_to_right.read_u16();
-        upper_eight_bits = left_to_right_data >> 8;
-        xbee.putc(upper_eight_bits);
+       
+        pwmLed = 1;
+        unsigned short lowerEightBits = upToDownData;
+        xbee.putc(lowerEightBits);
         wait_ms(15);
-
-        pwm = 0.8;
-        lower_eight_bits = left_to_right_data;
-        xbee.putc(lower_eight_bits);
+        
+        pwmLed = 0.6;
+        unsigned short leftToRightData = leftToRight.read_u16();
+        upperEightBits = leftToRightData >> 8;
+        xbee.putc(upperEightBits);
         wait_ms(15);
-
-        pwm = 0.9;
+        
+        pwmLed = 0.2;
+        lowerEightBits = leftToRightData;
+        xbee.putc(lowerEightBits);
+        wait_ms(15);
     }
 }
