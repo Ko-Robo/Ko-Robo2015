@@ -33,6 +33,7 @@ char exchange(long near_data, char far_data) {
 }
 
 int main(void) {
+    communication.address(0xE0);
     while (1) {
 
     }
