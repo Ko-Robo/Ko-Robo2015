@@ -12,8 +12,9 @@ BusIn rotary_sw(dp24, dp18, dp17, dp25);
 I2CSlave communication(dp5, dp27);
 
 int main(void) {
+    int rotary_sw_val;
     communication.address(0x32);
     while (1) {
-
+        rotary_sw_val = rotary_sw ^ 0xf;
     }
 }
