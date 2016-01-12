@@ -33,11 +33,7 @@ char exchange(long near_data, char far_data) {
 }
 
 int main(void) {
-<<<<<<< HEAD
-    communication.address(0xE0);
-=======
     i2c.address(0xA0);
->>>>>>> 781a245aeaacc6347e494dd27e2c33219b305220
     while (1) {
         int reception_check = i2c.receive();
         switch (reception_check) {
