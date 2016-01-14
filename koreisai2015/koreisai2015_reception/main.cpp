@@ -34,7 +34,7 @@ int main(void) {
             motorB.run(0.2);
             motorC.run(0.2);
             motorD.run(0.2);
-        
+
           } else if (!(operationData[1]&0b001==0b001)) {
               motorA.run(-0.2);
               motorB.run(-0.2);
@@ -54,10 +54,10 @@ int main(void) {
             double powerD = upToDownCoefficient * -0.5 + leftToRightCoefficient *  0.5;
 
             if(operationData[1]&0b001){
-                powerA *= 2;   
-                powerB *= 2;   
-                powerC *= 2;   
-                powerD *= 2;   
+                powerA *= 2;
+                powerB *= 2;
+                powerC *= 2;
+                powerD *= 2;
             }
 
             motorA.run(powerA);
