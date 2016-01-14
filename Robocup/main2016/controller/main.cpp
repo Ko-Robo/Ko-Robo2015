@@ -16,5 +16,22 @@ int main(void) {
     communication.address(0x32);
     while (1) {
         rotary_sw_val = rotary_sw ^ 0xf;
+        int reception_check = communication.receive();
+        switch (reception_check) {
+            case I2CSlave::ReadAddressed:
+                communication.write(rotary_sw_val);
+                communication.stop();
+                break;
+            case I2CSlave::WriteGeneral:
+                // 全マイコンに受信要求された時の処理
+                break;
+            case I2CSlave::WriteAddressed:
+                // このマイコンに受信要求された時の処理
+                break;
+            case I2CSlave::NoData:
+                break;
+            default:
+                break;
+        }
     }
 }
