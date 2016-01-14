@@ -38,7 +38,7 @@ int main(void) {
         int reception_check = i2c.receive();
         switch (reception_check) {
             case I2CSlave::ReadAddressed:
-                i2c.write( sendData, 1);
+                i2c.write(sendData, 1);
                 i2c.stop();
                 break;
             case I2CSlave::WriteGeneral:
@@ -50,7 +50,7 @@ int main(void) {
             case I2CSlave::NoData:
             default:
                 sendData = exchange(infrared, far);
-        	break;
+                break;
         }
     }
 }
