@@ -30,8 +30,7 @@ Compass::Compass(PinName sda, PinName scl) {
 }
 
 float Compass::measure_angle(void) {
-    float diff_angle = hmc6352->sample() / 10.0 - initial_angle;
-    return diff_angle;
+    return hmc6352->sample() / 10.0 - initial_angle;
 }
 
 #endif /* COMPASS_H */
