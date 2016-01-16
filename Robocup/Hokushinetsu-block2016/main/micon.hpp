@@ -38,17 +38,18 @@ private:
     static void chmod(char);
 };
 
-void Micon::init() {
-    motor1 = new Motor(p15, p16, p17);
-    motor2 = new Motor(p17, p18, p22);
-    motor3 = new Motor(p19, p20, p21);
-    lines = new BusIn(p24, p25, p26, p29);
-    i2c_top = new I2C(p9, p10);
-    i2c_bottom = new I2C(p28, p27);
-    compass = new Compass(p9, p10);
-    ball = new DigitalIn(p11);
-    kick = new DigitalOut(p12);
+Motor* Micon::motor1      = new Motor(p15, p16, p17);
+Motor* Micon::motor2      = new Motor(p17, p18, p22);
+Motor* Micon::motor3      = new Motor(p19, p20, p21);
+BusIn* Micon::lines       = new BusIn(p24, p25, p26, p29);
+I2C* Micon::i2c_top       = new I2C(p9, p10);
+I2C* Micon::i2c_bottom    = new I2C(p28, p27);
+Compass* Micon::compass   = new Compass(p9, p10);
+DigitalIn* Micon::ball    = new DigitalIn(p11);
+DigitalOut* Micon::kick   = new DigitalOut(p12);
+Ticker* Micon::flipper_sw = new Ticker();
 
+void Micon::init() {
     flipper_sw->attach(&Micon::check_sw, 0.5);
 }
 
