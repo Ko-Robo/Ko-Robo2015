@@ -17,12 +17,12 @@ Ticker timer;
 DigitalOut led(LED1);
 
 void move(double powor, double moveAngle) {
-    double cosine = cos(moveAngle * 0.0174533);
-    double sine   = sin(moveAngle * 0.0174533);
+    double cosine = power * cos(moveAngle * 0.0174533);
+    double sine   = power * sin(moveAngle * 0.0174533);
 
-    motor1 = powor * (0.35 * sine - 0.6062177826491071 * cosine);
-    motor2 = powor * (-0.70 * sine);
-    motor3 = powor * (0.35 * sine + 0.6062177826491071 * cosine);
+    motor1 = (0.35 * sine - 0.6062177826491071 * cosine);
+    motor2 = (-0.70 * sine);
+    motor3 = (0.35 * sine + 0.6062177826491071 * cosine);
 }
 
 void to_field() {

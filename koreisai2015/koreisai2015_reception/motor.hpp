@@ -90,7 +90,6 @@ void Motor::brake(void) {
     powerLevel->write(limit);
 }
 
-<<<<<<< HEAD:Robocup/main2016/motor.hpp
 #endif
 
 /*
@@ -109,7 +108,3 @@ int main(void) {
     }
 }
  */
- 
-=======
-#endif /* MOTOR_H */
->>>>>>> baseFork/master:koreisai2015/koreisai2015_reception/motor.hpp

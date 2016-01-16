@@ -27,18 +27,18 @@ int main(void) {
         unsigned short upperEightBits = upToDownData >> 8;
         xbee.putc(upperEightBits);
         wait_ms(15);
-       
+
         pwmLed = 1;
         unsigned short lowerEightBits = upToDownData;
         xbee.putc(lowerEightBits);
         wait_ms(15);
-        
+
         pwmLed = 0.6;
         unsigned short leftToRightData = leftToRight.read_u16();
         upperEightBits = leftToRightData >> 8;
         xbee.putc(upperEightBits);
         wait_ms(15);
-        
+
         pwmLed = 0.2;
         lowerEightBits = leftToRightData;
         xbee.putc(lowerEightBits);
