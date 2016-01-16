@@ -33,19 +33,7 @@ char exchange(long near_data, char far_data) {
 }
 
 int main(void) {
-<<<<<<< HEAD:Robocup/main2016/infrared/main.cpp
-<<<<<<< HEAD
     i2c.address(0xA0);
-=======
-<<<<<<< HEAD
-    communication.address(0xE0);
-=======
-    i2c.address(0xA0);
->>>>>>> 781a245aeaacc6347e494dd27e2c33219b305220
->>>>>>> baseFork/master
-=======
-    i2c.address(0xA0);
->>>>>>> FETCH_HEAD:Robocup/Hokushinetsu-block2016/infrared/main.cpp
     while (1) {
         int reception_check = i2c.receive();
         switch (reception_check) {
