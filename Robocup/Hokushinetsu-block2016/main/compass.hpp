@@ -25,12 +25,24 @@ private:
 Compass::Compass(PinName sda, PinName scl) {
     hmc6352 = new HMC6352(sda, scl);
     hmc6352->setOpMode(HMC6352_CONTINUOUS, 1, 20);
-    wait(0.05);
-    initial_angle = hmc6352->sample() / 10.0;
+
+    do{
+        initial_angle = hmc6352->sample() / 10.0;
+    } while(initial_angle >= 360 || initial_angle <0 );
+
 }
 
 float Compass::measure_angle(void) {
-    return hmc6352->sample() / 10.0 - initial_angle;
+    float hmc = hmc6352->sample() / 10.0;
+
+    if(hmc - inital_angle < -180){
+        return hmc - inital_angle + 360;
+    }else if(hmc - inital_angle > 180){
+        return hmc - inital_angle - 360;
+    }else{
+        return hmc - inital_angle;
+    }
+
 }
 
 #endif /* COMPASS_H */
