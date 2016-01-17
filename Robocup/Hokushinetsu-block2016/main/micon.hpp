@@ -17,9 +17,7 @@ enum MODE {NORMAL, KEEPER, LINE_TRACE, KAMIKAZE, DEBUG_COMPASS, DEBUG_LINE, DEBU
 
 class Micon {
 public:
-    static Motor* motor1;
-    static Motor* motor2;
-    static Motor* motor3;
+    static Motor* motors[3];
     static BusIn* lines;
     static I2C* i2c_top;
     static I2C* i2c_bottom;
@@ -27,6 +25,8 @@ public:
     static DigitalIn* ball;
     static DigitalOut* kick;
     static Ticker* flipper_sw;
+    static Ticker* flipper_line;
+    static Ticker* flipper_kicker;
 
     static void behaves(char);
     static void init();
@@ -38,16 +38,20 @@ private:
     static void chmod(char);
 };
 
-Motor* Micon::motor1      = new Motor(p15, p16, p17);
-Motor* Micon::motor2      = new Motor(p17, p18, p22);
-Motor* Micon::motor3      = new Motor(p19, p20, p21);
-BusIn* Micon::lines       = new BusIn(p24, p25, p26, p29);
-I2C* Micon::i2c_top       = new I2C(p9, p10);
-I2C* Micon::i2c_bottom    = new I2C(p28, p27);
-Compass* Micon::compass   = new Compass(p9, p10);
-DigitalIn* Micon::ball    = new DigitalIn(p11);
-DigitalOut* Micon::kick   = new DigitalOut(p12);
-Ticker* Micon::flipper_sw = new Ticker();
+Motor* Micon::motors[3] = {
+    new Motor(p15, p16, p17),
+    new Motor(p17, p18, p22),
+    new Motor(p19, p20, p21)
+};
+BusIn*      Micon::lines          = new BusIn(p24, p25, p26, p29);
+I2C*        Micon::i2c_top        = new I2C(p9, p10);
+I2C*        Micon::i2c_bottom     = new I2C(p28, p27);
+Compass*    Micon::compass        = new Compass(p9, p10);
+DigitalIn*  Micon::ball           = new DigitalIn(p11);
+DigitalOut* Micon::kick           = new DigitalOut(p12);
+Ticker*     Micon::flipper_sw     = new Ticker();
+Ticker*     Micon::flipper_line   = new Ticker();
+Ticker*     Micon::flipper_kicker = new Ticker();
 
 void Micon::init() {
     flipper_sw->attach(&Micon::check_sw, 0.5);
