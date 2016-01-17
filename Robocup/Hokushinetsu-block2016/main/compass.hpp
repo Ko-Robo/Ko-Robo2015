@@ -34,7 +34,6 @@ Compass::Compass(PinName sda, PinName scl) {
 
 float Compass::measure_angle(float compare_angle = initial_angle) {
     float hmc = hmc6352->sample() / 10.0;
-
     if(hmc - compare_angle < -180){
         return hmc - compare_angle + 360;
     }else if(hmc - compare_angle > 180){

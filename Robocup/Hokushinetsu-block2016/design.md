@@ -125,8 +125,9 @@
         - [ ] Line-Trace Mode
         - [ ] Kamikaze Mode
         - Debug Mode
-            - [ ] IR
-            - [ ] Ultrasonic
+            - [ ] Compass
+            - [ ] Kicker
+            - [ ] Dribbler
             - [ ] Line
     - [ ] アルゴリズム作成
 - 実践的なこと
