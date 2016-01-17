@@ -22,11 +22,9 @@ public:
     static I2C* i2c_top;
     static I2C* i2c_bottom;
     static Compass* compass;
-    static DigitalIn* ball;
-    static DigitalOut* kick;
+    static Kicker* kicker;
     static Ticker* flipper_sw;
     static Ticker* flipper_line;
-    static Ticker* flipper_kicker;
 
     static void behaves(char);
     static void init();
@@ -36,6 +34,7 @@ private:
     static void check_sw();
     static void check_start_stop_sw(char);
     static void chmod(char);
+    static void check_line();
 };
 
 Motor* Micon::motors[3] = {
@@ -43,18 +42,17 @@ Motor* Micon::motors[3] = {
     new Motor(p17, p18, p22),
     new Motor(p19, p20, p21)
 };
-BusIn*      Micon::lines          = new BusIn(p24, p25, p26, p29);
-I2C*        Micon::i2c_top        = new I2C(p9, p10);
-I2C*        Micon::i2c_bottom     = new I2C(p28, p27);
-Compass*    Micon::compass        = new Compass(p9, p10);
-DigitalIn*  Micon::ball           = new DigitalIn(p11);
-DigitalOut* Micon::kick           = new DigitalOut(p12);
-Ticker*     Micon::flipper_sw     = new Ticker();
-Ticker*     Micon::flipper_line   = new Ticker();
-Ticker*     Micon::flipper_kicker = new Ticker();
+BusIn*   Micon::lines          = new BusIn(p24, p25, p26, p29);
+I2C*     Micon::i2c_top        = new I2C(p9, p10);
+I2C*     Micon::i2c_bottom     = new I2C(p28, p27);
+Compass* Micon::compass        = new Compass(p9, p10);
+Kicker*  Micon::kicker         = new Kicker(p12, p11);
+Ticker*  Micon::flipper_sw     = new Ticker();
+Ticker*  Micon::flipper_line   = new Ticker();
 
 void Micon::init() {
     flipper_sw->attach(&Micon::check_sw, 0.5);
+    flipper_line->attach(&Micon::check_line, 0.5);
 }
 
 void Micon::behaves(char mode) {
@@ -113,5 +111,7 @@ void Micon::chmod(char sw_val) {
     }
     MiconState::set_mode(sw_val);
 }
+
+void Micon::check_line() {}
 
 #endif /* MICON_H */
