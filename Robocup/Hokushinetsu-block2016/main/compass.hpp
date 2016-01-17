@@ -14,7 +14,7 @@
 class Compass {
 public:
     Compass(PinName sda, PinName scl);
-    float measure_angle(void);
+    float measure_angle(float compare_angle);
 
 private:
     // digital compass module
@@ -25,12 +25,23 @@ private:
 Compass::Compass(PinName sda, PinName scl) {
     hmc6352 = new HMC6352(sda, scl);
     hmc6352->setOpMode(HMC6352_CONTINUOUS, 1, 20);
-    wait(0.05);
-    initial_angle = hmc6352->sample() / 10.0;
+
+    do{
+        initial_angle = hmc6352->sample() / 10.0;
+    } while(initial_angle >= 360 || initial_angle <0 );
+
 }
 
-float Compass::measure_angle(void) {
-    return hmc6352->sample() / 10.0 - initial_angle;
+float Compass::measure_angle(float compare_angle = initial_angle) {
+    float hmc = hmc6352->sample() / 10.0;
+    if(hmc - compare_angle < -180){
+        return hmc - compare_angle + 360;
+    }else if(hmc - compare_angle > 180){
+        return hmc - compare_angle - 360;
+    }else{
+        return hmc - compare_angle;
+    }
+
 }
 
 #endif /* COMPASS_H */
