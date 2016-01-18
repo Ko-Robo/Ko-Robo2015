@@ -1,11 +1,14 @@
 #include "mbed.h"
+#include "i2cslave-support.hpp"
+
+#define ADDRESS 0xA0
 
 BusIn infrared(dp1, dp2, dp4, dp6, dp9, dp10, dp11, dp13, dp15, dp16, dp17, dp18);
-BusIn far(dp24, dp25);
+BusIn far_infrared(dp24, dp25);
 
-I2CSlave i2c(dp5, dp27);
+I2CSlaveSupport communication(dp5, dp27);
 
-char exchange(long near_data, char far_data) {
+char get_correct_data(long near_data, char far_data) {
     int angle = 0;
     char cnt = 0;
     char base;
@@ -33,24 +36,9 @@ char exchange(long near_data, char far_data) {
 }
 
 int main(void) {
-    i2c.address(0xA0);
+    char send_data;
     while (1) {
-        int reception_check = i2c.receive();
-        switch (reception_check) {
-            case I2CSlave::ReadAddressed:
-                i2c.write(sendData, 1);
-                i2c.stop();
-                break;
-            case I2CSlave::WriteGeneral:
-                // 全マイコンに受信要求された時の処理
-                break;
-            case I2CSlave::WriteAddressed:
-                // このマイコンに受信要求された時の処理
-                break;
-            case I2CSlave::NoData:
-            default:
-                sendData = exchange(infrared, far);
-                break;
-        }
+        send_data = get_correct_data(infrared, far_infrared);
+        communication.do_i2c(ADDRESS, &send_data, 1, communication.WRITE);
     }
 }
