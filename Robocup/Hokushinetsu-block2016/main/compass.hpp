@@ -21,7 +21,7 @@ private:
     // digital compass module
     HMC6352* hmc6352;
     float initial_angle;
-    float get_correct_angle();
+    float get_correct_angle(float difference_angle);
 };
 
 Compass::Compass(PinName sda, PinName scl) {
@@ -40,12 +40,12 @@ float Compass::get_correct_angle(float difference_angle) {
 
 float Compass::measure_angle() {
     float difference_angle = hmc6352->sample() / 10.0 - initial_angle;
-    return get_correct_angle();
+    return get_correct_angle(difference_angle);
 }
 
 float Compass::measure_angle(float compare_angle) {
     float difference_angle = hmc6352->sample() / 10.0 - compare_angle;
-    return get_correct_angle();
+    return get_correct_angle(difference_angle);
 }
 
 #endif /* COMPASS_H */
