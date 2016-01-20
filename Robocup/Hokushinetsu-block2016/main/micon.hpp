@@ -3,56 +3,64 @@
 
 #include "mbed.h"
 #include "micon-state.hpp"
-#include "micon-behavior.hpp"
 #include "motor.hpp"
 #include "compass.hpp"
 #include "kicker.hpp"
-#include "PID.h"
 
 #define CONTROLER_ADDRESS  0x32
 #define IR_ADDRESS         0xA0
 #define ULTRASONIC_ADDRESS 0xF0
 
-enum MODE {NORMAL, KEEPER, LINE_TRACE, KAMIKAZE, DEBUG_COMPASS, DEBUG_LINE, DEBUG_KICKER, DEBUG_DRIBBLER};
+class MiconBehavior;
+class MotorControl;
+
+enum MODE {NORMAL, KEEPER, LINE_TRACE, KAMIKAZE, DEBUG_COMPASS, DEBUG_LINE, DEBUG_KICKER, DEBUG_DRIBBLER, DEBUG_I2C};
 
 class Micon {
 public:
-    static Motor* motors[3];
-    static BusIn* lines;
+    static DigitalIn* lines[4];
     static I2C* i2c_top;
     static I2C* i2c_bottom;
+    static PwmOut* sound;
     static Compass* compass;
     static Kicker* kicker;
     static Ticker* flipper_sw;
     static Ticker* flipper_line;
+    static MotorControl* motors;
 
     static void behaves(char);
     static void init();
 
 private:
-    Micon();
     static void check_sw();
     static void check_start_stop_sw(char);
     static void chmod(char);
     static void check_line();
+
 };
 
-Motor* Micon::motors[3] = {
-    new Motor(p15, p16, p17),
-    new Motor(p17, p18, p22),
-    new Motor(p19, p20, p21)
+#include "micon-behavior.hpp"
+#include "motor-control.hpp"
+
+DigitalIn* Micon::lines[4] = {
+    new DigitalIn(p5),
+    new DigitalIn(p7),
+    new DigitalIn(p8),
+    new DigitalIn(p6)
 };
-BusIn*   Micon::lines          = new BusIn(p24, p25, p26, p29);
+
+Compass* Micon::compass        = new Compass(p9, p10);
+MotorControl* Micon::motors = new MotorControl(p15, p16, p23, p17, p18, p22, p19, p20, p21, p9, p10, 10);
 I2C*     Micon::i2c_top        = new I2C(p9, p10);
 I2C*     Micon::i2c_bottom     = new I2C(p28, p27);
-Compass* Micon::compass        = new Compass(p9, p10);
-Kicker*  Micon::kicker         = new Kicker(p12, p11);
+PwmOut*  Micon::sound          = new PwmOut(p24);
+Kicker*  Micon::kicker         = new Kicker(p11, p30);
 Ticker*  Micon::flipper_sw     = new Ticker();
 Ticker*  Micon::flipper_line   = new Ticker();
 
 void Micon::init() {
-    flipper_sw->attach(&Micon::check_sw, 0.5);
-    flipper_line->attach(&Micon::check_line, 0.5);
+    flipper_sw->attach(&Micon::check_sw, 0.1);
+    flipper_line->attach(&Micon::check_line, 0.01);
 }
 
 void Micon::behaves(char mode) {
@@ -81,6 +89,9 @@ void Micon::behaves(char mode) {
         case DEBUG_DRIBBLER:
             MiconBehavior::run_debug_dribbler();
             break;
+        case DEBUG_I2C:
+            MiconBehavior::run_debug_i2c();
+            break;
         default:
             MiconBehavior::run_normal();
             break;
@@ -88,11 +99,11 @@ void Micon::behaves(char mode) {
 }
 
 void Micon::check_sw() {
-    char sw_values[2];
-    i2c_top->read(CONTROLER_ADDRESS | 1, sw_values, 1);
+    char sw_values[3];
+    i2c_top->read(CONTROLER_ADDRESS | 1, sw_values, 3);
 
     check_start_stop_sw(sw_values[0]);
-    chmod(sw_values[1]);
+    chmod(sw_values[2]);
 }
 
 void Micon::check_start_stop_sw(char sw_val) {
@@ -105,13 +116,12 @@ void Micon::check_start_stop_sw(char sw_val) {
     }
 }
 
-void Micon::chmod(char sw_val) {
-    if (sw_val > 7) {
-        MiconState::set_mode(0);
-    }
-    MiconState::set_mode(sw_val);
+void Micon::chmod(char  mode_number) {
+    MiconState::set_mode( mode_number);
 }
 
-void Micon::check_line() {}
+void Micon::check_line() {
+}
+
 
 #endif /* MICON_H */
